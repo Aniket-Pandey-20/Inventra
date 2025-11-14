@@ -6,28 +6,41 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Package } from "lucide-react";
+import api from "@/../middleware/interceptors.ts";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [userId, setUserId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!email || !password) {
+      toast.error("Please enter both User ID and Password");
+      return;
+    }
+
     setIsLoading(true);
 
-    // Simple auth check - in production, this would be a real API call
-    if (userId && password) {
-      setTimeout(() => {
+    try {
+      const res = await api.post("/auth/login", { email, password });
+      if (res.data?.success) {
         localStorage.setItem("isAuthenticated", "true");
-        localStorage.setItem("userId", userId);
+        localStorage.setItem("email", email);
+        //localStorage.setItem("authToken", res.data.token);
+        
         toast.success("Login successful!");
+
         navigate("/dashboard");
-        setIsLoading(false);
-      }, 500);
-    } else {
-      toast.error("Please enter both User ID and Password");
+      } else {
+        toast.error(res.data?.message || "Invalid credentials");
+      }
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "Login failed. Try again.");
+    } finally {
       setIsLoading(false);
     }
   };
@@ -49,13 +62,13 @@ const Login = () => {
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="userId">User ID</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="userId"
+                id="email"
                 type="text"
-                placeholder="Enter your user ID"
-                value={userId}
-                onChange={(e) => setUserId(e.target.value)}
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>

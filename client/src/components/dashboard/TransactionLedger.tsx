@@ -18,13 +18,13 @@ const TransactionLedger = ({ transactions }: TransactionLedgerProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="rounded-md border">
+        <div className="rounded-md border px-6 py-2">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Timestamp</TableHead>
                 <TableHead>Transaction ID</TableHead>
-                <TableHead>Product</TableHead>
+                <TableHead>Product ID</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead className="text-right">Quantity</TableHead>
                 <TableHead className="text-right">Cost/Unit</TableHead>
@@ -47,8 +47,7 @@ const TransactionLedger = ({ transactions }: TransactionLedgerProps) => {
                     <TableCell className="font-mono text-sm">{transaction.id}</TableCell>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{transaction.productName}</div>
-                        <div className="text-xs text-muted-foreground">{transaction.productId}</div>
+                        <div className="font-medium">{transaction.productId}</div>
                       </div>
                     </TableCell>
                     <TableCell>

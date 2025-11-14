@@ -1,11 +1,13 @@
 import pool from '../config/db.js';
-import { getStockOverview, getTransactionLedger } from '../constants/sql/inventoryQueries.js';
+import { getStockOverviewQuery, getTransactionLedgerQuery, getBatchForProduct } from '../constants/sql/inventoryQueries.js';
 
 // GET /api/inventory/stock
 async function getStockOverview(req, res) {
   try {
-    const { rows } = await pool.query(getStockOverview);
-    res.json(rows);
+    const products = await pool.query(getStockOverviewQuery);
+    const batches  = await pool.query(getBatchForProduct);
+    
+    res.json({'products' : products.rows, 'batches' : batches.rows});
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to fetch stock overview' });
@@ -16,7 +18,7 @@ async function getStockOverview(req, res) {
 async function getTransactionLedger(req, res) {
   try {
     // Combine purchases and sales in time-series order
-    const { rows } = await pool.query(getTransactionLedger);
+    const { rows } = await pool.query(getTransactionLedgerQuery);
     res.json(rows);
   } catch (err) {
     console.error(err);

@@ -1,5 +1,5 @@
 import express from 'express';
-import { getStockOverview, getTransactionLedger} from '../controllers/inventoryController';
+import { getStockOverview, getTransactionLedger } from '../controllers/inventoryController.js';
 const router = express.Router();
 
 router.get('/stock', getStockOverview);

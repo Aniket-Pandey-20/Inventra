@@ -1,5 +1,5 @@
 import pool from "../config/db.js";
-import { findUserByUsername, createUser } from '../constants/sql/userQueries.js';
+import { findUserByUsernameQuery, createUserQuery } from '../constants/sql/userQueries.js';
 
 async function createUser(req, res) {
   try {
@@ -7,12 +7,12 @@ async function createUser(req, res) {
 
     if (!email || !password) return res.status(400).json({ message: 'Username and password required' });
 
-    const userExists = await pool.query(findUserByUsername, [email]);
+    const userExists = await pool.query(findUserByUsernameQuery, [email]);
     
     if (userExists.rows.length > 0) return res.status(409).json({ message: 'User already exists' });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await pool.query(createUser, [
+    const newUser = await pool.query(createUserQuery, [
       email,
       hashedPassword,
       email,

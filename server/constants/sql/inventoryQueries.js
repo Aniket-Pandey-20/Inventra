@@ -1,10 +1,10 @@
-export const createInventory = `
+export const createInventoryQuery = `
     INSERT INTO inventory_batches(batch_id, product_id, quantity, quantity_remaining, unit_price, purchased_at)
     VALUES($1, $2, $3, $3, $4, $5)
     ON CONFLICT (batch_id) DO NOTHING
 `;
 
-export const getStockByProduct = `
+export const getStockByProductQuery = `
     SELECT batch_id, quantity_remaining, unit_price
     FROM inventory_batches
    WHERE product_id=$1 AND quantity_remaining > 0
@@ -12,16 +12,26 @@ export const getStockByProduct = `
    FOR UPDATE
 `;
 
-export const updateBatchQuantity = `
-    UPDATE inventory_batches SET quantity_remaining = quantity_remaining - $1 WHERE batch_id = $2
+export const updateBatchQuantityQuery = `
+    WITH updated AS (
+        UPDATE inventory_batches
+        SET quantity_remaining = quantity_remaining - $1
+        WHERE batch_id = $2
+        RETURNING batch_id, quantity_remaining
+    )
+
+    DELETE FROM inventory_batches
+    WHERE batch_id IN (
+        SELECT batch_id FROM updated WHERE quantity_remaining <= 0
+    );
 `;
-export const createSaleEntry = `
+export const createSaleEntryQuery = `
     INSERT INTO sales(sale_id, product_id, quantity, cogs, sold_at)
     VALUES($1, $2, $3, $4, $5)
     ON CONFLICT (sale_id) DO NOTHING
 `;
 
-export const getStockOverview=`
+export const getStockOverviewQuery = `
     SELECT 
         p.product_id, 
         p.name, 
@@ -36,7 +46,19 @@ export const getStockOverview=`
       ORDER BY p.product_id
 `
 
-export const getTransactionLedger=`
+export const getBatchForProduct = `
+    SELECT 
+        batch_id,
+        product_id,
+        quantity,
+        quantity_remaining,
+        unit_price,
+        purchased_at
+        FROM inventory_batches
+    ORDER BY purchased_at ASC;
+`
+
+export const getTransactionLedgerQuery = `
     SELECT batch_id AS id, product_id, quantity, unit_price, purchased_at AS timestamp, 'purchase' AS type
     FROM inventory_batches
     WHERE quantity > 0

@@ -16,7 +16,6 @@ export interface Product {
 export interface Transaction {
   id: string;
   productId: string;
-  productName: string;
   type: 'purchase' | 'sale';
   quantity: number;
   costPerUnit: number;
