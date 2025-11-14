@@ -1,11 +1,8 @@
 // src/api.js
 import axios from "axios";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const api = axios.create({
-  baseURL: `${process.env.EndpointUrl}/api`, 
+  baseURL: `${import.meta.env.VITE_ENDPOINT_URL}/api`, 
 });
 
 // Optional: intercept requests to add auth headers
