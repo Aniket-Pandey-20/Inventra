@@ -92,10 +92,19 @@ const Dashboard = () => {
     });
 
     socketRef.current = socket;
+    //#region Socket Connection
+    socket.on("connect", () => {
+      console.log("Connected to Socket.IO:", socket.id);
 
-    socket.on("connect", () =>
-      console.log("Connected to Socket.IO:", socket.id)
-    );
+      socket.emit("pingServer");
+    });
+
+    // Socket Health Check
+    socket.on("pongServer", (data) => {
+      console.log("Server is alive:", data);
+    });
+    //#endregion
+
 
     socket.on("ledgerUpdate", (event) => {
       console.log("Real-time ledger event received:", event);
@@ -181,7 +190,7 @@ const Dashboard = () => {
       toast.success("Simulation Started — watch real-time updates!");
       const res = await api.post("/simulateTransactions");
 
-      toast.success("Simulation Ended!");
+      if(res.status == 200) toast.success("Simulation Ended!");
     } catch (error) {
       console.error(error);
       toast.error("Failed to simulate transactions");

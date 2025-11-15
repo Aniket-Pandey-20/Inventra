@@ -1,5 +1,4 @@
 /**
- * simulator.service.js
  * -----------------------------------------------------
  * This service generates 7–10 realistic inventory events
  * (purchase + sale) and publishes them to Kafka.
@@ -17,17 +16,13 @@ import { v4 as uuidv4 } from "uuid";
 
 const producer = kafka.producer();
 
-/* ----------------------------------------------------
-   1. Fetch all products
----------------------------------------------------- */
+//Fetch all products
 async function fetchProducts() {
   const { rows } = await pool.query("SELECT product_id, name FROM products");
   return rows;
 }
 
-/* ----------------------------------------------------
-   2. Get inventory stock for a product
----------------------------------------------------- */
+//Get inventory stock for a product
 async function getAvailableStock(productId) {
   const { rows } = await pool.query(
     `SELECT COALESCE(SUM(quantity_remaining), 0) AS stock
@@ -39,9 +34,7 @@ async function getAvailableStock(productId) {
   return parseInt(rows[0].stock, 10);
 }
 
-/* ----------------------------------------------------
-   3. Build Purchase Event
----------------------------------------------------- */
+// Build Purchase Event
 function buildPurchaseEvent(product) {
   return {
     event_id: uuidv4(),
@@ -53,9 +46,7 @@ function buildPurchaseEvent(product) {
   };
 }
 
-/* ----------------------------------------------------
-   4. Build Sale Event (valid only if stock > 0)
----------------------------------------------------- */
+//Build Sale Event (valid only if stock > 0)
 async function buildSaleEvent(product) {
   const stock = await getAvailableStock(product.product_id);
 
@@ -69,9 +60,7 @@ async function buildSaleEvent(product) {
   };
 }
 
-/* ----------------------------------------------------
-   5. Publish event to Kafka
----------------------------------------------------- */
+//Publish event to Kafka
 async function publishEvent(topic, event) {
   await producer.send({
     topic,
@@ -81,9 +70,7 @@ async function publishEvent(topic, event) {
   console.log(`Sent ${topic}:`, event);
 }
 
-/* ----------------------------------------------------
-   6. Main Simulation Logic (API-compatible)
----------------------------------------------------- */
+//Main Simulation Logic (API-compatible)
 export async function runTransactionSimulation() {
   console.log("Starting transaction simulation...");
 

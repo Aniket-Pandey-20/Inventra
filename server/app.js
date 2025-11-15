@@ -35,6 +35,22 @@ const io = new Server(httpServer, {
 //make io accessible via app
 app.set("io", io);
 
+//#region Socket health check
+io.on("connection", (socket) => {
+  console.log("Client connected:", socket.id);
+
+  // Health check: respond to client ping
+  socket.on("pingServer", () => {
+    console.log(`Ping received from ${socket.id}`);
+    socket.emit("pongServer", { status: "ok", timestamp: new Date() });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected:", socket.id);
+  });
+});
+//#endregion
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
@@ -47,7 +63,7 @@ httpServer.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
 
   try {
-    // startConsumer should accept io and use it to emit ledger updates
+    // startConsumer accept io and use it to emit ledger updates
     await startConsumer(io);
     console.log("Kafka consumer started");
   } catch (err) {
