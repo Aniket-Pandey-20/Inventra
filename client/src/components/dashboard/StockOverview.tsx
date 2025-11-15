@@ -27,7 +27,6 @@ interface StockOverviewProps {
 
 const StockOverview = ({ products }: StockOverviewProps) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const productsPerPage = 5;
   
   const totalValue = products.reduce((sum, p) => sum + p.totalInventoryCost, 0);
@@ -112,15 +111,15 @@ const StockOverview = ({ products }: StockOverviewProps) => {
                   <TableCell className="font-medium">{product.id}</TableCell>
                   <TableCell>{product.name}</TableCell>
                   <TableCell className="text-right">{product.currentQuantity}</TableCell>
-                  <TableCell className="text-right">${product.totalInventoryCost}</TableCell>
+                  <TableCell className="text-right ">${product.totalInventoryCost.toFixed(2)}</TableCell>
                   <TableCell className="text-right font-semibold text-primary">
-                    ${product.averageCostPerUnit}
+                    ${product.averageCostPerUnit.toFixed(2)}
                   </TableCell>
                   <TableCell className="text-center">{product.batches.length}</TableCell>
                   <TableCell className="text-center">
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button variant="outline" size="sm" className="gap-2" onClick={() => setSelectedProduct(product)} disabled={product.batches.length === 0}>
+                        <Button variant="outline" size="sm" className="gap-2" disabled={product.batches.length === 0}>
                           <FileText className="w-4 h-4" />
                           View Batches
                         </Button>

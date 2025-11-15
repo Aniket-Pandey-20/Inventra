@@ -13,6 +13,7 @@ const pool = new Pool({
   ssl: {
     rejectUnauthorized: false
   }
+  //ssl: false -- For local setup comment above line
 });
 
 pool.on("connect", () => {

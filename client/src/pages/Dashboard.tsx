@@ -86,7 +86,7 @@ const Dashboard = () => {
 
   // ------------------ SOCKET.IO REALTIME ------------------
   const setupSocket = () => {
-    const socket = io("http://localhost:5000", {
+    const socket = io(import.meta.env.VITE_ENDPOINT_URL, {
       transports: ["websocket", "polling"],
       reconnectionAttempts: 5,
     });
@@ -190,7 +190,6 @@ const Dashboard = () => {
     }
   };
 
-  // ------------------ UI ------------------
   const handleLogout = () => {
     localStorage.removeItem("isAuthenticated");
     localStorage.removeItem("userId");

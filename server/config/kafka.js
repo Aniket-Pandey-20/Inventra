@@ -5,7 +5,7 @@ dotenv.config();
 
 const kafka = new Kafka({
   clientId: 'inventory-app',
-  brokers: [process.env.KAFKA_BROKER],
+  brokers: process.env.KAFKA_BROKER.split(","),
   ssl: true,
   sasl: {
     mechanism: 'plain',
