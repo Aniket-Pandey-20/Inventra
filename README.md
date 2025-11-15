@@ -12,7 +12,12 @@ The system supports:
 - Real-time inventory updates via Kafka topics  
 - FIFO (First-In-First-Out) logic for stock consumption  
 - User authentication
-- Live dashboards showing inventory, purchases, and sales  
+- Live dashboards showing inventory, purchases, and sales
+
+## Live Links
+
+- **Frontend:** https://inventra-client-theta.vercel.app  
+- **Backend API:** https://inventra-m2vx.onrender.com
 
 ---
 
