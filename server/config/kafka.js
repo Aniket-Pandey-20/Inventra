@@ -12,9 +12,7 @@ const kafka = new Kafka({
     username: process.env.KAFKA_API_KEY,
     password: process.env.KAFKA_API_SECRET
   },
-  connectionTimeout: 10000, // 10s
-  requestTimeout: 10000,
-  retry: { retries: 4 }
+  retry: { retries: 6 }
 });
 
 export default kafka;
